@@ -12,6 +12,7 @@ void main() async {
       desiredAccuracy: LocationAccuracy.high);
   double latitude = position.latitude;
   double longitude = position.longitude;
+  print("Latitude: ${position.latitude}, Longitude: ${position.longitude}");
   print('------------My Prayer Times------------');
 
   final myCoordinates = Coordinates(latitude, longitude);
@@ -20,9 +21,10 @@ void main() async {
       await placemarkFromCoordinates(latitude, longitude);
   final Placemark placemark = placemarks.first;
   final String country = placemark.country!;
+
   print('country:$country');
 
-  //Dictionary containing countries with their respective Calculation Method
+  //Dictionary Containing Countries with their respective Calculation Method
   final methods = {
     'Pakistan,Afghanistan,Malaysia,India,Indonesia,Bangladesh':
         CalculationMethod.karachi,
@@ -46,12 +48,22 @@ void main() async {
     }
   }
 
+  //TimeZone Just For Testing
+  //final kushtiaUtcOffset = Duration(hours: 6);
+  //final KuwaitUTC = Duration(hours: 0);
+  // then pass your offset to PrayerTimes like this:
+  //final prayerTimes = PrayerTimes(coordinates, date, params, utcOffset: newYorkUtcOffset);
+
+  // Calculate prayer times using the selected CalculationMethod and the user's location
+  //final params = CalculationParameters(fajrAngle: 16, ishaAngle: 15); Russia
+  //final params = CalculationParameters(fajrAngle: 12, ishaAngle: 12); France
   final params = method.getParameters();
+  print('Selected CalculationMethod: ${method.name}');
   params.madhab = Madhab.hanafi; // Usage for Asr Time
   final prayerTimes = PrayerTimes.today(
     myCoordinates,
     params,
-  );
+  ); // 3rd parameter->> utcOffset: KuwaitUTC
 
   print(
       "---Today's Prayer Times in Your Local Timezone(${prayerTimes.fajr.timeZoneName})---");
@@ -62,6 +74,7 @@ void main() async {
   print('Maghrib: ${DateFormat.jm().format(prayerTimes.maghrib)}');
   print('Sunset: ${DateFormat.jm().format(prayerTimes.maghrib)}');
   print('Isha: ${DateFormat.jm().format(prayerTimes.isha)}');
+
   runApp(const MyApp());
 }
 
